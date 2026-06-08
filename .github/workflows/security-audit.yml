@@ -45,13 +45,4 @@ jobs:
             --config auto \
             --taint-intrafile \
             --error \
-            --sarif-output opengrep-results.sarif \
             .
-
-      - name: Upload OpenGrep results
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: opengrep-results
-          path: opengrep-results.sarif
-          if-no-files-found: warn
