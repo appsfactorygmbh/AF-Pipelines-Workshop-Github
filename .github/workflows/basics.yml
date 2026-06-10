@@ -32,7 +32,7 @@ jobs:
       - name: Run npm audit
         run: |
           AUDIT=$(npm audit --json || true)
-          if [ -z "$AUDIT" ]; then
+          if [ -z "$AUDIT" ] || [ "$AUDIT" = "{}" ]; then
             echo "No vulnerabilities found."
           else
             echo "Vulnerabilities found. Please address them."
@@ -50,9 +50,9 @@ jobs:
             npm outdated
             # exit 1
           fi
-
-
-        # ToDo: Add testing step here
+          
+      - name: Run unit tests
+        run: npm test
 
   build:
     name: Build
