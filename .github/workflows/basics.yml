@@ -5,6 +5,7 @@ on:
     branches: 
       - main
       - develop
+  workflow_call:
 
 jobs:
   lint-and-typecheck:
@@ -50,7 +51,7 @@ jobs:
             npm outdated
             # exit 1
           fi
-          
+
       - name: Run unit tests
         run: npm test
 
