@@ -43,7 +43,7 @@ jobs:
       - name: Run npm outdated check
         run: |
           OUTDATED=$(npm outdated --json || true)
-          if [ -z "$OUTDATED" ]; then
+          if [ -z "$OUTDATED" ] || [ "$OUTDATED" = "{}" ]; then
             echo "Dependencies are up to date."
           else
             echo "Some dependencies are outdated. Please update them."
