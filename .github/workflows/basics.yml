@@ -1,0 +1,56 @@
+name: Deploy Basics
+
+on:
+  push:
+    branches: 
+      - main
+      - develop
+
+jobs:
+  lint-and-typecheck:
+    name: Lint and Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript type check
+        run: npm run typecheck
+
+      - name: Run npm audit
+        run: |
+          AUDIT=$(npm audit --json || true)
+          if [ -z "$AUDIT" ]; then
+            echo "No vulnerabilities found."
+          else
+            echo "Vulnerabilities found. Please address them."
+            echo "$AUDIT"
+            # exit 1
+          fi
+
+      - name: Run npm outdated check
+        run: |
+          OUTDATED=$(npm outdated --json || true)
+          if [ -z "$OUTDATED" ]; then
+            echo "Dependencies are up to date."
+          else
+            echo "Some dependencies are outdated. Please update them."
+            echo "$OUTDATED"
+            # exit 1
+          fi
+
+        
+
+      
