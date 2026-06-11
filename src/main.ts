@@ -56,6 +56,10 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 
 <div class="ticks"></div>
 <section id="spacer"></section>
+
+<footer style="text-align:center;padding:1rem;opacity:0.6;font-size:0.85rem;">
+  Version: ${ import.meta.env.VITE_APP_VERSION ?? 'localhost' }
+</footer>
 `;
 
 setupCounter(document.querySelector<HTMLButtonElement>("#counter")!);
