@@ -60,6 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
