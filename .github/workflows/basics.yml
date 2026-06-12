@@ -83,7 +83,7 @@ jobs:
         run: npm ci
 
       - name: Bump patch version (main only)
-        if: github.ref == 'refs/heads/main' 
+        if: github.ref == 'refs/heads/main'
         id: bump_version
         run: |
           CURRENT=$(node -p "require('./package.json').version")
@@ -120,9 +120,17 @@ jobs:
           path: dist/
 
   deploy:
-    name: Deploy to Azure Static Website
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Download build artifacts
@@ -131,16 +139,14 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Upload to Azure Blob Storage ($web)
-        uses: azure/cli@v2
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          azcliversion: latest
-          inlineScript: |
-            az storage blob upload-batch \
-              --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
-              --destination '$web' \
-              --source dist/ \
-              --overwrite
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   tag:
     name: Tag Release
