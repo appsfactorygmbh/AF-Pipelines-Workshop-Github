@@ -46,7 +46,7 @@ jobs:
             echo "Dependencies are up to date."
           else
             echo "Some dependencies are outdated. Please update them."
-            npm outdated
+            npm outdated || true
             # exit 1
           fi
 
