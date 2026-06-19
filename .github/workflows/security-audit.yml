@@ -1,0 +1,48 @@
+name: "Security Vulnerability Audit"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "0 12 * * 1" # Runs every Monday at 12:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  npm-audit:
+    name: npm Audit (SCA)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Audit dependencies from lockfile
+        run: npm audit --audit-level=high
+
+  opengrep:
+    name: OpenGrep Static Analysis (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Install OpenGrep
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/opengrep/opengrep/main/install.sh | bash
+          "$HOME/.opengrep/cli/latest/opengrep" --version
+
+      - name: Run OpenGrep scan
+        run: |
+          "$HOME/.opengrep/cli/latest/opengrep" scan \
+            --config auto \
+            --taint-intrafile \
+            --error \
+            .
