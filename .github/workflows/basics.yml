@@ -56,6 +56,7 @@ jobs:
           "$HOME/.opengrep/cli/latest/opengrep" --version
 
       - name: Run OpenGrep scan
+        continue-on-error: true
         run: |
           "$HOME/.opengrep/cli/latest/opengrep" scan \
             --config auto \

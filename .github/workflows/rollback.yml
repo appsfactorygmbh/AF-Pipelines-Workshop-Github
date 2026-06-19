@@ -23,17 +23,21 @@ jobs:
           fetch-depth: 0
 
       - name: Check tag exists
+        env:
+          TAG: ${{ inputs.tag }}
         run: |
-          if ! git rev-parse "${{ inputs.tag }}" >/dev/null 2>&1; then
-            echo "Error: tag '${{ inputs.tag }}' does not exist in this repository."
+          if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Error: tag '$TAG' does not exist in this repository."
             exit 1
           fi
-          echo "Tag '${{ inputs.tag }}' found at $(git rev-parse ${{ inputs.tag }})"
+          echo "Tag '$TAG' found at $(git rev-parse "$TAG")"
 
       - name: Parse version from tag
         id: parse
+        env:
+          TAG: ${{ inputs.tag }}
         run: |
-          VERSION="${{ inputs.tag }}"
+          VERSION="$TAG"
           # Strip leading 'v' if present
           VERSION="${VERSION#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
